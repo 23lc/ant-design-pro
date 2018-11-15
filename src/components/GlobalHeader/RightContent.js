@@ -1,12 +1,23 @@
 import React, { PureComponent } from 'react';
 import { FormattedMessage, formatMessage } from 'umi/locale';
 import { Spin, Tag, Menu, Icon, Dropdown, Avatar, Tooltip } from 'antd';
+import Link from 'umi/link';
 import moment from 'moment';
 import groupBy from 'lodash/groupBy';
 import NoticeIcon from '../NoticeIcon';
 import HeaderSearch from '../HeaderSearch';
 import SelectLang from '../SelectLang';
 import styles from './index.less';
+
+const getIcon = icon => {
+  if (typeof icon === 'string' && icon.indexOf('http') === 0) {
+    return <img src={icon} alt="icon" className={styles.icon} />;
+  }
+  if (typeof icon === 'string') {
+    return <Icon type={icon} />;
+  }
+  return icon;
+};
 
 export default class GlobalHeaderRight extends PureComponent {
   getNoticeData() {
@@ -40,6 +51,52 @@ export default class GlobalHeaderRight extends PureComponent {
     return groupBy(newNotices, 'type');
   }
 
+  conversionPath = path => {
+    if (path && path.indexOf('http') === 0) {
+      return path;
+    }
+    return `/${path || ''}`.replace(/\/+/g, '/');
+  };
+
+  /**
+   * 判断是否是http链接.返回 Link 或 a
+   * Judge whether it is http link.return a or Link
+   * @memberof SiderMenu
+   */
+  getMenuItemPath = item => {
+    const { name } = item;
+    const itemPath = this.conversionPath(item.path);
+    const icon = getIcon(item.icon);
+    const { target } = item;
+    // Is it a http link
+    if (/^https?:\/\//.test(itemPath)) {
+      return (
+        <a href={itemPath} target={target}>
+          {icon}
+          <span>{name}</span>
+        </a>
+      );
+    }
+    const { location, isMobile, onCollapse } = this.props;
+    return (
+      <Link
+        to={itemPath}
+        target={target}
+        replace={itemPath === location.pathname}
+        onClick={
+          isMobile
+            ? () => {
+                onCollapse(true);
+              }
+            : undefined
+        }
+      >
+        {icon}
+        <span>{name}</span>
+      </Link>
+    );
+  };
+
   render() {
     const {
       currentUser,
@@ -48,6 +105,7 @@ export default class GlobalHeaderRight extends PureComponent {
       onMenuClick,
       onNoticeClear,
       theme,
+      // menuData,
     } = this.props;
     const menu = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick}>
@@ -77,6 +135,18 @@ export default class GlobalHeaderRight extends PureComponent {
     }
     return (
       <div className={className}>
+        {/* <Menu mode="horizontal" style={{ display: 'inline-block', lineHeight: '62px' }}>
+          {
+            menuData
+            .filter(item => item.name && !item.hideInMenu)
+            .map((item) => (
+              <Menu.Item key={item.path}>
+                {this.getMenuItemPath(item)}
+              </Menu.Item>
+            ))
+            .filter(item => item)
+          }
+        </Menu> */}
         <HeaderSearch
           className={`${styles.action} ${styles.search}`}
           placeholder={formatMessage({ id: 'component.globalHeader.search' })}
