@@ -1,8 +1,12 @@
+@import '~antd/lib/style/themes/default.less';
+
 .toolbar {
   position: absolute;
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   bottom: 13px;
+  width: 100%;
+  pointer-events: none;
 }
 .icon {
   width: 60px;
@@ -16,4 +20,13 @@
   justify-content: center;
   justify-items: center;
   cursor: pointer;
+  pointer-events: auto;
+}
+.icon-normal {
+  background: #fff;
+  color: #91a5af;
+}
+.icon-selected {
+  background: @primary-color;
+  color: #fff;
 }

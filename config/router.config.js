@@ -18,12 +18,12 @@ export default [
     authority: ['admin', 'user'],
     routes: [
       // dashboard
-      { path: '/', redirect: '/dashboard' },
+      { path: '/', redirect: '/DWPZ' },
       {
-        path: '/dashboard',
-        name: 'dashboard',
+        path: '/DWPZ',
+        name: 'DWPZ',
         icon: 'dashboard',
-        component: './Dashboard/Analysis',
+        component: './DWPZ',
       },
       // forms
       {

@@ -4,6 +4,7 @@ import 'geohey-javascript-sdk/dist/lib/g.css';
 import G from 'geohey-javascript-sdk';
 import 'geohey-javascript-sdk/dist/lib/g-canvas.min';
 import 'geohey-javascript-sdk/dist/lib/g-draw.min';
+import 'geohey-javascript-sdk/dist/lib/g-maps.min';
 import Tabs from '@/components/Tabs';
 import Toolbar from './Toolbar';
 
@@ -20,6 +21,7 @@ class BaseMap extends Component {
 
   state = {
     map: null,
+    graphicLayer: null,
   };
 
   componentDidMount() {
@@ -35,28 +37,36 @@ class BaseMap extends Component {
       continuouslyZoom: false, // 是否允许无极缩放
       initStatus: {
         // 地图初始状态
-        center: [12673975, 4079823], // 地图中心
-        res: 4891.9698105, // 分辨率
+        center: [11860868, 3446746], // 地图中心
+        res: 305.74811 / 16, // 分辨率
         rotate: 0, // 旋转角度
       },
     });
 
-    const tileLayer = new G.Layer.Tile('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-      cluster: ['a', 'b', 'c'],
-    });
+    const tileLayer = new G.Layer.AMap('street');
+    // const tileLayer = new G.Layer.Tile('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+    //   cluster: ['a', 'b', 'c'],
+    // });
     tileLayer.addTo(map);
-    this.setState({ map });
+
+    const graphicLayer = new G.Layer.Graphic();
+    graphicLayer.addTo(map);
+    this.setState({ map, graphicLayer });
   }
 
-  componentWillUnmount() {}
+  componentWillUnmount() {
+    const { map } = this.state;
+    map.destroy();
+  }
 
   render() {
     const { map } = this.state;
+    const { toolbar } = this.props;
     return (
       <Fragment>
         <div id="mapContainer" className={styles.mapContainer} />
-        {map !== null && <Toolbar map={map} />}
-        <Tabs mode="right">
+        {map !== null && toolbar && <Toolbar {...this.state} {...toolbar} />}
+        <Tabs mode="right" {...this.state}>
           <Tabs.TabPane title="警情列表" key="1">
             111
           </Tabs.TabPane>
