@@ -1,0 +1,60 @@
+.card {
+  .index {
+    flex-basis: 40px;
+    text-align: center;
+    position: relative;
+    .marker {
+      color: #fff;
+      width: 32px;
+      height: 34px;
+      margin: auto;
+      background-image: url('/marker.png');
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      line-height: 25px;
+    }
+    &::after {
+      content: '';
+      width: 10px;
+      height: 3px;
+      position: absolute;
+      top: 0;
+      border: 0 solid;
+      left: 15px;
+      border-radius: 50%;
+      box-shadow: 0 34px 1px 0 rgba(0, 0, 0, 0.4);
+    }
+  }
+  .content {
+    flex: 1;
+    header {
+      font-size: 14px;
+      font-weight: normal;
+      font-stretch: normal;
+      letter-spacing: 0;
+      color: #5c9ff6;
+    }
+    div,
+    time {
+      font-size: 14px;
+      font-weight: normal;
+      font-stretch: normal;
+      line-height: 20px;
+      letter-spacing: 0;
+      color: #3f4048;
+    }
+    address {
+      font-size: 14px;
+      font-weight: normal;
+      font-stretch: normal;
+      line-height: 18px;
+      letter-spacing: 0;
+      color: #40b5cd;
+    }
+  }
+  .tags {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 50px;
+  }
+}

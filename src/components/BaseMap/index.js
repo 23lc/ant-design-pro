@@ -1,11 +1,12 @@
 import React, { Component, Fragment } from 'react';
-// import { Tabs } from 'antd';
+// import { List, Tag } from 'antd';
 import 'geohey-javascript-sdk/dist/lib/g.css';
 import G from 'geohey-javascript-sdk';
 import 'geohey-javascript-sdk/dist/lib/g-canvas.min';
 import 'geohey-javascript-sdk/dist/lib/g-draw.min';
 import 'geohey-javascript-sdk/dist/lib/g-maps.min';
 import Tabs from '@/components/Tabs';
+import PoliceCaseList from '@/components/PoliceCaseList';
 import Toolbar from './Toolbar';
 
 // import { getTimeDistance } from '@/utils/utils';
@@ -57,18 +58,41 @@ class BaseMap extends Component {
   componentWillUnmount() {
     const { map } = this.state;
     map.destroy();
+    this.setState({ map: null, graphicLayer: null });
   }
 
   render() {
     const { map } = this.state;
     const { toolbar } = this.props;
+    const dataSource = [
+      {
+        key: '1',
+        title: '报警人称一客人被人砍伤',
+        org: '凤凰派出所',
+        time: '2018-10-18 09：55：44',
+        address: '荷塘月色南门对面鼎泰宾馆3021房间',
+        tags: ['刑事案件', '特重大', '指挥'],
+      },
+      {
+        key: '2',
+        title: '报警人称一客人被人砍伤',
+        org: '凤凰派出所',
+        time: '2018-10-18 09：55：44',
+        address: '荷塘月色南门对面鼎泰宾馆3021房间',
+        tags: ['刑事案件', '特重大', '指挥'],
+      },
+    ];
     return (
       <Fragment>
         <div id="mapContainer" className={styles.mapContainer} />
         {map !== null && toolbar && <Toolbar {...this.state} {...toolbar} />}
         <Tabs mode="right" {...this.state}>
-          <Tabs.TabPane title="警情列表" key="1">
-            111
+          <Tabs.TabPane
+            title="警情列表"
+            key="1"
+            style={{ padding: '30px 8px', background: '#fff' }}
+          >
+            <PoliceCaseList dataSource={dataSource} />
           </Tabs.TabPane>
           <Tabs.TabPane title="图层列表" key="2">
             222

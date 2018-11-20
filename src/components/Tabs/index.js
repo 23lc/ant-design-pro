@@ -36,7 +36,7 @@ class Tabs extends Component {
       children = Array.isArray(children) ? children : [children];
     }
     const style = { flexDirection: 'row-reverse' };
-    const offset = selectedKey === null ? '-376px' : '20px';
+    const offset = selectedKey === null ? '-400px' : '0';
     if (mode === 'right') {
       style.flexDirection = 'row';
       style.right = offset;
