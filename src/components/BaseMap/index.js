@@ -8,6 +8,7 @@ import 'geohey-javascript-sdk/dist/lib/g-maps.min';
 import Tabs from '@/components/Tabs';
 import PoliceCaseList from '@/components/PoliceCaseList';
 import Toolbar from './Toolbar';
+import LayerPicker from './LayerPicker';
 
 // import { getTimeDistance } from '@/utils/utils';
 
@@ -62,26 +63,8 @@ class BaseMap extends Component {
   }
 
   render() {
-    const { map } = this.state;
-    const { toolbar } = this.props;
-    const dataSource = [
-      {
-        key: '1',
-        title: '报警人称一客人被人砍伤',
-        org: '凤凰派出所',
-        time: '2018-10-18 09：55：44',
-        address: '荷塘月色南门对面鼎泰宾馆3021房间',
-        tags: ['刑事案件', '特重大', '指挥'],
-      },
-      {
-        key: '2',
-        title: '报警人称一客人被人砍伤',
-        org: '凤凰派出所',
-        time: '2018-10-18 09：55：44',
-        address: '荷塘月色南门对面鼎泰宾馆3021房间',
-        tags: ['刑事案件', '特重大', '指挥'],
-      },
-    ];
+    const { map, graphicLayer } = this.state;
+    const { toolbar, policeCaseList } = this.props;
     return (
       <Fragment>
         <div id="mapContainer" className={styles.mapContainer} />
@@ -90,12 +73,46 @@ class BaseMap extends Component {
           <Tabs.TabPane
             title="警情列表"
             key="1"
-            style={{ padding: '30px 8px', background: '#fff' }}
+            style={{ padding: '20px 8px', background: '#fff' }}
           >
-            <PoliceCaseList dataSource={dataSource} />
+            <PoliceCaseList
+              dataSource={policeCaseList}
+              onItemClick={({ a: { XZB, YZB }, index }) => {
+                if (map) {
+                  const gcjCoor = G.Proj.Gcj.project(Number(XZB), Number(YZB));
+                  const coor = G.Proj.WebMercator.project(gcjCoor[0], gcjCoor[1]);
+                  map.centerAt(coor);
+                  graphicLayer.clear();
+                  const point = new G.Graphic.Point(
+                    coor,
+                    {},
+                    {
+                      shape: 'image',
+                      size: [40, 44],
+                      offset: [-20, -44],
+                      image: '/marker.png',
+                      clickable: true,
+                    }
+                  );
+                  const label = new G.Graphic.Point(
+                    coor,
+                    {},
+                    {
+                      shape: 'text',
+                      size: [16],
+                      offset: [0, -27],
+                      text: index + 1,
+                      textColor: '#fff',
+                    }
+                  );
+                  point.addTo(graphicLayer);
+                  label.addTo(graphicLayer);
+                }
+              }}
+            />
           </Tabs.TabPane>
-          <Tabs.TabPane title="图层列表" key="2">
-            222
+          <Tabs.TabPane title="图层列表" key="2" style={{ padding: '20px 8px' }}>
+            <LayerPicker />
           </Tabs.TabPane>
         </Tabs>
       </Fragment>

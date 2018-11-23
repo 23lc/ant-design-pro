@@ -1,53 +1,64 @@
-import { queryFakeList, removeFakeList, addFakeList, updateFakeList } from '@/services/api';
+import { getTrace, getInfo } from '@/services/api';
 
 export default {
   namespace: 'list',
 
   state: {
-    list: [],
+    info: null,
+    trace: null,
   },
 
   effects: {
-    *fetch({ payload }, { call, put }) {
-      const response = yield call(queryFakeList, payload);
+    *fetchInfo({ payload }, { call, put }) {
+      const response = yield call(getInfo, payload);
       yield put({
-        type: 'queryList',
-        payload: Array.isArray(response) ? response : [],
+        type: 'updateInfo',
+        payload: {
+          value: payload.value,
+          info: response,
+        },
       });
     },
-    *appendFetch({ payload }, { call, put }) {
-      const response = yield call(queryFakeList, payload);
+
+    *fetchTrace({ payload }, { call, put }) {
+      const response = yield call(getTrace, payload);
       yield put({
-        type: 'appendList',
-        payload: Array.isArray(response) ? response : [],
-      });
-    },
-    *submit({ payload }, { call, put }) {
-      let callback;
-      if (payload.id) {
-        callback = Object.keys(payload).length === 1 ? removeFakeList : updateFakeList;
-      } else {
-        callback = addFakeList;
-      }
-      const response = yield call(callback, payload); // post
-      yield put({
-        type: 'queryList',
-        payload: response,
+        type: 'updateTrace',
+        payload: {
+          value: payload.value,
+          trace: response,
+        },
       });
     },
   },
 
   reducers: {
-    queryList(state, action) {
+    updateInfo(state, { payload }) {
+      let { info } = state;
+      if (info === null) {
+        info = {};
+      }
+      info[payload.value] = payload.info;
       return {
         ...state,
-        list: action.payload,
+        info,
       };
     },
-    appendList(state, action) {
+    updateTrace(state, { payload }) {
+      let { trace } = state;
+      if (trace === null) {
+        trace = {};
+      }
+      trace[payload.value] = payload.trace;
       return {
         ...state,
-        list: state.list.concat(action.payload),
+        trace,
+      };
+    },
+    updateParams(state, { payload }) {
+      return {
+        ...state,
+        ...payload,
       };
     },
   },

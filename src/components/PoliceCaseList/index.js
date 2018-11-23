@@ -3,22 +3,30 @@ import { List, Tag } from 'antd';
 
 import styles from './index.less';
 
-const PoliceCaseList = ({ dataSource }) => (
+const PoliceCaseList = ({ dataSource, onItemClick }) => (
   <List
     dataSource={dataSource}
-    renderItem={(item, index) => (
-      <List.Item key={item.key} className={styles.card}>
+    renderItem={({ a, c }, index) => (
+      <List.Item
+        key={c.KID}
+        className={styles.card}
+        onClick={() => {
+          if (onItemClick) {
+            onItemClick({ a, c, index });
+          }
+        }}
+      >
         <div className={styles.index}>
           <div className={styles.marker}>{index + 1}</div>
         </div>
         <div className={styles.content}>
-          <header>{item.title}</header>
-          <div>{item.org}</div>
-          <time>{item.time}</time>
-          <address>{item.address}</address>
+          <header>{c.AJMC}</header>
+          <div>{a.CJDW}</div>
+          <time>{c.ASJFSSJ_ASJFSKSSJ}</time>
+          <address>{c.ASJFSDD_DZMC}</address>
         </div>
         <div className={styles.tags}>
-          {item.tags.map(tag => (
+          {['刑事案件', '特重大', '指挥'].map(tag => (
             <Tag key={tag} style={{ textAlign: 'center', margin: '5px' }}>
               {tag}
             </Tag>

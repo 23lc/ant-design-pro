@@ -1,0 +1,26 @@
+{
+  "objType": "4394",
+  "objTypeName": "电话号码",
+  "objValue": "13114396163",
+  "cphms": null,
+  "sjhms": null,
+  "qqhms": [
+      {
+          "objTypeName": "QQ",
+          "objValue": "744749881",
+          "objType": "558"
+      }
+  ],
+  "wxhms": [
+      {
+          "objTypeName": "微信ID",
+          "objValue": "3633518869",
+          "objType": "4615"
+      },
+      {
+          "objTypeName": "微信ID",
+          "objValue": "739340180",
+          "objType": "4615"
+      }
+  ]
+}

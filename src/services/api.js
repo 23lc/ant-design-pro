@@ -124,3 +124,15 @@ export async function queryNotices() {
 export async function getFakeCaptcha(mobile) {
   return request(`/api/captcha?mobile=${mobile}`);
 }
+
+export async function getPoliceCase() {
+  return request(`/api/policecase`);
+}
+
+export async function getTrace() {
+  return request(`/api/admin/queue/iphone_track`);
+}
+
+export async function getInfo() {
+  return request(`/api/admin/queue/getObjectRelationAll`);
+}

@@ -32,6 +32,10 @@ class Toolbar extends Component {
     const { map, graphicLayer, onDrawEnd } = this.props;
     this.drawLayer = new G.Layer.Draw();
     this.drawLayer.addTo(map);
+    this.drawLayer.addListener('drawStart', () => {
+      this.drawLayer.clear();
+      graphicLayer.clear();
+    });
     this.drawLayer.addListener('drawEnd', e => {
       const { radius, mode } = this.state;
       // todo: 处理返回的数据，并调用回调函数
@@ -134,7 +138,7 @@ class Toolbar extends Component {
           )}
         >
           <IconFont
-            type="icon-line"
+            type="icon-circle"
             data-tool="circle"
             title="绘制圆形"
             style={{ fontSize: '22px' }}

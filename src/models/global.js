@@ -1,4 +1,4 @@
-import { queryNotices } from '@/services/api';
+import { queryNotices, getPoliceCase } from '@/services/api';
 
 export default {
   namespace: 'global',
@@ -6,9 +6,20 @@ export default {
   state: {
     collapsed: false,
     notices: [],
+    policeCaseList: [],
+    layerList: [],
   },
 
   effects: {
+    *fetchPoliceCase(_, { call, put }) {
+      const data = yield call(getPoliceCase);
+      yield put({
+        type: 'updateParams',
+        payload: {
+          policeCaseList: data.ListView,
+        },
+      });
+    },
     *fetchNotices(_, { call, put }) {
       const data = yield call(queryNotices);
       yield put({
@@ -50,6 +61,12 @@ export default {
       return {
         ...state,
         notices: state.notices.filter(item => item.type !== payload),
+      };
+    },
+    updateParams(state, { payload }) {
+      return {
+        ...state,
+        ...payload,
       };
     },
   },

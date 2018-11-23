@@ -1,4 +1,7 @@
 import mockjs from 'mockjs';
+import policecase from './policecase.json';
+import trace from './trace.json';
+import info from './info.json';
 
 const titles = [
   'Alipay',
@@ -321,7 +324,22 @@ function getFakeCaptcha(req, res) {
   return res.json('captcha-xxx');
 }
 
+function getPoliceCase(req, res) {
+  return res.json(policecase);
+}
+
+function getTrack(req, res) {
+  return res.json(trace);
+}
+
+function getInfo(req, res) {
+  return res.json(info);
+}
+
 export default {
+  'GET /api/policecase': getPoliceCase,
+  'GET /api/admin/queue/iphone_track': getTrack,
+  'GET /api/admin/queue/getObjectRelationAll': getInfo,
   'GET /api/project/notice': getNotice,
   'GET /api/activities': getActivities,
   'POST /api/forms': (req, res) => {

@@ -7,28 +7,39 @@ import BaseMap from '@/components/BaseMap';
 
 // import styles from './Analysis.less';
 
-@connect(({ loading }) => ({
+@connect(({ loading, global: { policeCaseList, layerList } }) => ({
   loading: loading.effects['chart/fetch'],
+  policeCaseList,
+  layerList,
 }))
-class Analysis extends Component {
+class DWPZ extends Component {
   // constructor(props) {
   //   super(props);
   // }
 
   state = {};
 
-  componentDidMount() {}
+  componentDidMount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'global/fetchPoliceCase',
+    });
+  }
 
   componentWillUnmount() {}
 
-  onDrawEnd = e => {
-    console.log(e);
+  onDrawEnd = () => {
+    // todo: 新建一个节点对象
+    // console.log(e);
   };
 
   render() {
+    const { policeCaseList, layerList } = this.props;
     return (
       <WholeContent>
         <BaseMap
+          policeCaseList={policeCaseList}
+          layerList={layerList}
           toolbar={{
             onDrawEnd: this.onDrawEnd,
           }}
@@ -38,4 +49,4 @@ class Analysis extends Component {
   }
 }
 
-export default Analysis;
+export default DWPZ;
