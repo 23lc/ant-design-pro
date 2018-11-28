@@ -5,6 +5,7 @@ import G from 'geohey-javascript-sdk';
 import 'geohey-javascript-sdk/dist/lib/g-canvas.min';
 import 'geohey-javascript-sdk/dist/lib/g-draw.min';
 import 'geohey-javascript-sdk/dist/lib/g-maps.min';
+import 'geohey-javascript-sdk/dist/lib/g-cluster.min';
 import Tabs from '@/components/Tabs';
 import PoliceCaseList from '@/components/PoliceCaseList';
 import Toolbar from './Toolbar';
@@ -24,6 +25,8 @@ class BaseMap extends Component {
   state = {
     map: null,
     graphicLayer: null,
+    traceLayer: null,
+    clusterLayer: null,
   };
 
   componentDidMount() {
@@ -51,15 +54,28 @@ class BaseMap extends Component {
     // });
     tileLayer.addTo(map);
 
+    // 用于显示聚类图的图层
+    const clusterLayer = new G.Layer.Cluster({
+      breakValues: [30, 50, 100],
+    });
+    clusterLayer.addTo(map);
+
+    // 用于临时显示单个标记物的图层
     const graphicLayer = new G.Layer.Graphic();
     graphicLayer.addTo(map);
     this.setState({ map, graphicLayer });
+
+    // 用于显示轨迹的图层
+    const traceLayer = new G.Layer.Graphic();
+    traceLayer.addTo(map);
+
+    this.setState({ map, graphicLayer, traceLayer, clusterLayer });
   }
 
   componentWillUnmount() {
     const { map } = this.state;
     map.destroy();
-    this.setState({ map: null, graphicLayer: null });
+    this.setState({ map: null, graphicLayer: null, traceLayer: null, clusterLayer: null });
   }
 
   render() {

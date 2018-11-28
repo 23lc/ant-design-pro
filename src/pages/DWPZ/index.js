@@ -44,6 +44,7 @@ class DWPZ extends Component {
             onDrawEnd: this.onDrawEnd,
           }}
         />
+        <div>{}</div>
       </WholeContent>
     );
   }
