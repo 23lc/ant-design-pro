@@ -1,0 +1,29 @@
+@import '~antd/lib/style/themes/default.less';
+// @import '../../theme/theme.less';
+
+// 树
+.Tree {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  cursor: -webkit-grab;
+  user-select: none;
+}
+.line path {
+  transition: all 0.2s;
+}
+.hide {
+  display: none;
+}
+.SvgContent {
+  &:hover .deleteNode:not(.hide),
+  &:hover .up_node {
+    // 大量使用 !important 是因为导出图片时只取svg元素的行内样式
+    // 于是把行内样式写死，让导出图片的样式一致，再用 !important 去覆盖它
+    display: inline !important;
+  }
+}
+.open_close {
+  display: inline !important;
+}

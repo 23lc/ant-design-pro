@@ -6,6 +6,7 @@ export default {
   state: {
     info: null,
     trace: null,
+    timestamp: null,
   },
 
   effects: {
@@ -26,7 +27,7 @@ export default {
         type: 'updateTrace',
         payload: {
           value: payload.value,
-          trace: response,
+          trace: response.basicStations,
         },
       });
     },
@@ -53,12 +54,19 @@ export default {
       return {
         ...state,
         trace,
+        timestamp: new Date().getTime(),
       };
     },
     updateParams(state, { payload }) {
       return {
         ...state,
         ...payload,
+      };
+    },
+    clear() {
+      return {
+        info: null,
+        trace: null,
       };
     },
   },
