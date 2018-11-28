@@ -1,10 +1,5 @@
 /* eslint-disable camelcase */
-/*
- * @Author: zhaoyuyang
- * @Date: 2018-03-01 08:58:46
- * @Last Modified by: zhaoyuyang
- * @Last Modified time: 2018-09-10 18:35:32
- */
+
 import React, { Component } from 'react';
 import styles from './index.less';
 

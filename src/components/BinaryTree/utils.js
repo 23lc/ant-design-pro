@@ -1,10 +1,3 @@
-/*
- * @Author: zhaoyuyang
- * @Date: 2018-03-01 08:59:38
- * @Last Modified by: zhaoyuyang
- * @Last Modified time: 2018-05-25 09:06:35
- */
-
 // 画板缩放比例，保留一位小数（最大值是1，最小值的0.3）
 export function keepOneBit(num) {
   const scale = Math.round(num * 10) / 10;

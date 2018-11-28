@@ -27,10 +27,10 @@ export default [
       },
       // forms
       {
-        path: '/form',
+        path: '/Trace',
         icon: 'form',
-        name: 'form',
-        component: './Forms/BasicForm',
+        name: 'Trace',
+        component: './Trace/index',
       },
       // list
       {
