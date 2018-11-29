@@ -136,3 +136,7 @@ export async function getTrace() {
 export async function getInfo() {
   return request(`/api/admin/queue/getObjectRelationAll`);
 }
+
+export async function getModelList() {
+  return request(`/api/admin/modellsit`);
+}

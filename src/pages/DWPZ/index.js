@@ -2,15 +2,17 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import WholeContent from '@/components/PageHeaderWrapper/WholeContent';
 import BaseMap from '@/components/BaseMap';
+import List from './list';
 
 // import { getTimeDistance } from '@/utils/utils';
 
-// import styles from './Analysis.less';
+import styles from './style.less';
 
-@connect(({ loading, global: { policeCaseList, layerList } }) => ({
+@connect(({ loading, global: { policeCaseList, layerList }, sjpz: { modelList } }) => ({
   loading: loading.effects['chart/fetch'],
   policeCaseList,
   layerList,
+  modelList,
 }))
 class DWPZ extends Component {
   // constructor(props) {
@@ -24,6 +26,9 @@ class DWPZ extends Component {
     dispatch({
       type: 'global/fetchPoliceCase',
     });
+    dispatch({
+      type: 'sjpz/fetchModelList',
+    });
   }
 
   componentWillUnmount() {}
@@ -34,7 +39,8 @@ class DWPZ extends Component {
   };
 
   render() {
-    const { policeCaseList, layerList } = this.props;
+    const { policeCaseList, layerList, modelList } = this.props;
+
     return (
       <WholeContent>
         <BaseMap
@@ -44,7 +50,7 @@ class DWPZ extends Component {
             onDrawEnd: this.onDrawEnd,
           }}
         />
-        <div>{}</div>
+        <div className={styles.wrapper}>{<List dataSource={modelList} />}</div>
       </WholeContent>
     );
   }

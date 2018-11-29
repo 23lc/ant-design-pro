@@ -1,7 +1,9 @@
+/* eslint-disable camelcase */
 import mockjs from 'mockjs';
 import policecase from './policecase.json';
 import trace from './trace.json';
 import info from './info.json';
+import model_list from './model_list.json';
 
 const titles = [
   'Alipay',
@@ -336,10 +338,15 @@ function getInfo(req, res) {
   return res.json(info);
 }
 
+function getModelList(req, res) {
+  return res.json(model_list);
+}
+
 export default {
   'GET /api/policecase': getPoliceCase,
   'GET /api/admin/queue/iphone_track': getTrack,
   'GET /api/admin/queue/getObjectRelationAll': getInfo,
+  'GET /api/admin/modellsit': getModelList,
   'GET /api/project/notice': getNotice,
   'GET /api/activities': getActivities,
   'POST /api/forms': (req, res) => {
