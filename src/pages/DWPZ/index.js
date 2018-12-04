@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import WholeContent from '@/components/PageHeaderWrapper/WholeContent';
 import BaseMap from '@/components/BaseMap';
+import SJPZModel from './SJPZModel';
 import List from './list';
 
 // import { getTimeDistance } from '@/utils/utils';
@@ -38,19 +39,36 @@ class DWPZ extends Component {
     // console.log(e);
   };
 
-  render() {
-    const { policeCaseList, layerList, modelList } = this.props;
+  create = () => {};
 
+  render() {
+    const {
+      policeCaseList,
+      layerList,
+      modelList,
+      history: {
+        location: {
+          query: { model },
+        },
+      },
+    } = this.props;
     return (
       <WholeContent>
         <BaseMap
           policeCaseList={policeCaseList}
+          modelList={<List type="simple" dataSource={modelList} onCreate={this.create} />}
           layerList={layerList}
           toolbar={{
             onDrawEnd: this.onDrawEnd,
           }}
         />
-        <div className={styles.wrapper}>{<List dataSource={modelList} />}</div>
+        {model ? (
+          <SJPZModel />
+        ) : (
+          <div className={styles.wrapper}>
+            <List type="normal" dataSource={modelList} />
+          </div>
+        )}
       </WholeContent>
     );
   }

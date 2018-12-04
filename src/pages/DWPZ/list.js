@@ -21,22 +21,24 @@ class ModelList extends Component {
   componentWillUnmount() {}
 
   render() {
-    const { dataSource } = this.props;
+    const { dataSource, type, onCreate } = this.props;
     const { keyword } = this.state;
     return (
-      <div className={classNames(styles.list, styles.panel)}>
-        <header>
-          <span style={{ lineHeight: '40px' }}>我的研判模型({dataSource.length})</span>
-          <div>
-            <span className={styles.close}>{/* <Icon type="close" /> */}</span>
-            <HeaderSearch
-              value={keyword}
-              onChange={e => {
-                this.setState({ keyword: e });
-              }}
-            />
-          </div>
-        </header>
+      <div className={classNames(styles.list, styles[type])}>
+        {type === 'normal' && (
+          <header>
+            <span style={{ lineHeight: '40px' }}>我的研判模型({dataSource.length})</span>
+            <div>
+              <span className={styles.close}>{/* <Icon type="close" /> */}</span>
+              <HeaderSearch
+                value={keyword}
+                onChange={e => {
+                  this.setState({ keyword: e });
+                }}
+              />
+            </div>
+          </header>
+        )}
         {
           <List
             dataSource={dataSource.filter(item => item.name.indexOf(keyword) > -1)}
@@ -71,6 +73,19 @@ class ModelList extends Component {
             )}
           />
         }
+        {type === 'simple' && (
+          <Button
+            type="primary"
+            size="large"
+            style={{ marginTop: '10px' }}
+            onClick={() => {
+              onCreate();
+            }}
+            block
+          >
+            新建研判模型
+          </Button>
+        )}
       </div>
     );
   }

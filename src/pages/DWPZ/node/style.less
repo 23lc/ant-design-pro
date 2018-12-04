@@ -1,0 +1,70 @@
+/*
+ * @Author: liangchao
+ * @Date: 2018-05-24 11:09:02
+ * @Last Modified by: liangchao
+ * @Last Modified time: 2018-06-27 17:27:59
+ */
+
+.node {
+  margin: 8px 0;
+  width: 60px;
+  height: 70px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin-left: auto;
+  margin-right: auto;
+  & div {
+    margin: auto;
+  }
+  & > span {
+    text-align: center;
+    font-size: 12px;
+  }
+}
+.resource_node {
+  position: relative;
+  border-radius: 2px;
+  & .icon {
+    border-radius: 2px;
+    fill: #fff;
+    color: #fff;
+  }
+  & svg {
+    height: 43px;
+    width: 43px;
+    padding: 10px;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+  }
+  .trash {
+    display: none;
+    height: 17px;
+    width: 17px;
+    background: rgba(39, 48, 61, 0.6);
+    position: absolute;
+    float: left;
+    margin-top: -43px;
+    margin-left: 26px;
+    padding: 0;
+    cursor: pointer;
+  }
+  &:hover {
+    .trash {
+      display: flex;
+    }
+  }
+}
+.relation_node {
+  border-radius: 21px;
+  & svg {
+    border-radius: 21px;
+    background: #fff;
+    height: 43px;
+    width: 43px;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+  }
+}

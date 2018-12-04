@@ -70,6 +70,7 @@ export default {
   'component.noticeIcon.empty': '暂无数据',
   'menu.home': '首页',
   'menu.DWPZ': '多维碰撞',
+  'menu.DWPZ.detail': '查看模型',
   'menu.Trace': '轨迹查询',
   'menu.list': '实时定位',
   'menu.list.searchtable': '查询表格',

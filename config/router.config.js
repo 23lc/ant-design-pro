@@ -23,7 +23,18 @@ export default [
         path: '/DWPZ',
         name: 'DWPZ',
         icon: 'dashboard',
-        component: './DWPZ',
+        routes: [
+          {
+            path: '/DWPZ',
+            component: './DWPZ',
+          },
+          {
+            path: '/DWPZ/:model',
+            hideInMenu: true,
+            name: 'detail',
+            component: './DWPZ',
+          },
+        ],
       },
       // forms
       {

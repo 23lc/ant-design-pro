@@ -5,6 +5,9 @@ export default {
 
   state: {
     modelList: [],
+    treeNodes: [],
+    resource: [],
+    timestamp: null,
   },
 
   effects: {

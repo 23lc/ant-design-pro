@@ -10,6 +10,7 @@ import Tabs from '@/components/Tabs';
 import PoliceCaseList from '@/components/PoliceCaseList';
 import Toolbar from './Toolbar';
 import LayerPicker from './LayerPicker';
+import PoliceCasePanel from './PoliceCasePanel';
 
 // import { getTimeDistance } from '@/utils/utils';
 
@@ -27,6 +28,9 @@ class BaseMap extends Component {
     graphicLayer: null,
     traceLayer: null,
     clusterLayer: null,
+    htmlLayer: null,
+    htmlId: null,
+    policeCase: null,
   };
 
   componentDidMount() {
@@ -69,18 +73,27 @@ class BaseMap extends Component {
     const traceLayer = new G.Layer.Graphic();
     traceLayer.addTo(map);
 
-    this.setState({ map, graphicLayer, traceLayer, clusterLayer });
+    const htmlLayer = new G.Layer.Html();
+    htmlLayer.addTo(map);
+
+    this.setState({ map, graphicLayer, traceLayer, clusterLayer, htmlLayer });
   }
 
   componentWillUnmount() {
     const { map } = this.state;
     map.destroy();
-    this.setState({ map: null, graphicLayer: null, traceLayer: null, clusterLayer: null });
+    this.setState({
+      map: null,
+      graphicLayer: null,
+      traceLayer: null,
+      clusterLayer: null,
+      htmlLayer: null,
+    });
   }
 
   render() {
-    const { map, graphicLayer } = this.state;
-    const { toolbar, policeCaseList } = this.props;
+    const { map, graphicLayer, htmlLayer, htmlId, policeCase } = this.state;
+    const { toolbar, policeCaseList, modelList } = this.props;
     return (
       <Fragment>
         <div id="mapContainer" className={styles.mapContainer} />
@@ -93,7 +106,8 @@ class BaseMap extends Component {
           >
             <PoliceCaseList
               dataSource={policeCaseList}
-              onItemClick={({ a: { XZB, YZB }, index }) => {
+              onItemClick={({ a, c, index }) => {
+                const { XZB, YZB } = a;
                 if (map) {
                   const gcjCoor = G.Proj.Gcj.project(Number(XZB), Number(YZB));
                   const coor = G.Proj.WebMercator.project(gcjCoor[0], gcjCoor[1]);
@@ -101,7 +115,7 @@ class BaseMap extends Component {
                   graphicLayer.clear();
                   const point = new G.Graphic.Point(
                     coor,
-                    {},
+                    { a, c },
                     {
                       shape: 'image',
                       size: [40, 44],
@@ -119,10 +133,20 @@ class BaseMap extends Component {
                       offset: [0, -27],
                       text: index + 1,
                       textColor: '#fff',
+                      clickable: false,
                     }
                   );
                   point.addTo(graphicLayer);
                   label.addTo(graphicLayer);
+
+                  graphicLayer.bind('graphicClicked', e => {
+                    const id = htmlLayer.addHtml(
+                      `<div id="htmllayer_${new Date().getTime()}"></div>`,
+                      coor[0],
+                      coor[1]
+                    );
+                    this.setState({ htmlId: id, policeCase: e.graphic.attrs });
+                  });
                 }
               }}
             />
@@ -131,6 +155,16 @@ class BaseMap extends Component {
             <LayerPicker />
           </Tabs.TabPane>
         </Tabs>
+        {htmlId !== null && (
+          <PoliceCasePanel
+            el={htmlLayer.getHtml(htmlId)}
+            policeCase={policeCase}
+            modelList={modelList}
+            onClose={() => {
+              this.setState({ htmlId: null, policeCase: null });
+            }}
+          />
+        )}
       </Fragment>
     );
   }
