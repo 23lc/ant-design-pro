@@ -14,11 +14,18 @@
   pointer-events: all;
   padding-bottom: 10px;
   min-height: 100px;
+  display: flex;
+  flex-direction: column;
   header {
     background: #f0f0f0;
     padding: 10px;
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;
+    flex-basis: 40px;
+  }
+  .node_container {
+    overflow-y: auto;
+    flex: 1;
   }
 }
 
@@ -41,4 +48,10 @@
 .tree-panel {
   width: 500px;
   height: 100%;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 20px;
 }

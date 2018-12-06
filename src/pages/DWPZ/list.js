@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { List, Switch, Button, Badge } from 'antd';
 import HeaderSearch from '@/components/HeaderSearch';
 import moment from 'moment';
+import router from 'umi/router';
 // import G from 'geohey-javascript-sdk';
 // import WholeContent from '@/components/PageHeaderWrapper/WholeContent';
 // import BaseMap from '@/components/BaseMap';
@@ -21,7 +22,7 @@ class ModelList extends Component {
   componentWillUnmount() {}
 
   render() {
-    const { dataSource, type, onCreate } = this.props;
+    const { dataSource, type, onCreate, policeCaseList, onPoliceCaseItemClick } = this.props;
     const { keyword } = this.state;
     return (
       <div className={classNames(styles.list, styles[type])}>
@@ -43,14 +44,38 @@ class ModelList extends Component {
           <List
             dataSource={dataSource.filter(item => item.name.indexOf(keyword) > -1)}
             renderItem={item => (
-              <List.Item key={item.id} className={styles.card}>
+              <List.Item
+                key={item.id}
+                className={styles.card}
+                onClick={() => {
+                  router.push(`/DWPZ?modelId=${item.id}`);
+                }}
+              >
                 <header>
                   <div>{item.name}</div>
                 </header>
                 <div>
                   <div>模型描述: {item.name}</div>
                   <div>研判结果: {item.result}</div>
-                  <div>相关案件: {item.related_case}</div>
+                  <div>
+                    相关案件:{' '}
+                    {policeCaseList &&
+                      item.related_case.split(',').map(caseId => {
+                        const index = policeCaseList.findIndex(({ c }) => caseId === c.ASJBH);
+                        const policeCase = policeCaseList[index];
+                        return (
+                          <a
+                            key={caseId}
+                            onClick={e => {
+                              e.stopPropagation();
+                              onPoliceCaseItemClick({ ...policeCase, index });
+                            }}
+                          >
+                            {policeCase.c.AJMC}
+                          </a>
+                        );
+                      })}
+                  </div>
                   <div>研判时间: {moment(item.timestamp).format('YYYY-MM-DD HH:mm:ss')}</div>
                   <div>研判人员: {item.create_user}</div>
                   <div>
@@ -65,7 +90,15 @@ class ModelList extends Component {
                   {item.status === 'error' && '执行失败'}
                 </div>
                 {item.status === 'success' && (
-                  <Button type="primary" size="small" className={styles.entry}>
+                  <Button
+                    type="primary"
+                    size="small"
+                    className={styles.entry}
+                    onClick={e => {
+                      e.stopPropagation();
+                      router.push(`/DWPZ/${item.id}`);
+                    }}
+                  >
                     查看结果
                   </Button>
                 )}
@@ -79,6 +112,7 @@ class ModelList extends Component {
             size="large"
             style={{ marginTop: '10px' }}
             onClick={() => {
+              router.push(`/DWPZ?modelId=`);
               onCreate();
             }}
             block

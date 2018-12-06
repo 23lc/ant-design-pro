@@ -32,3 +32,32 @@ ul,
 ol {
   list-style: none;
 }
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+// ::-webkit-scrollbar-track-piece {
+//   background: @scroll-bar-wrap-bg;
+//   border-radius: 6px;
+// }
+::-webkit-scrollbar-track {
+  padding: 3px;
+  -webkit-border-radius: 6px;
+  border-radius: 6px;
+}
+::-webkit-scrollbar-button {
+  height: 12px;
+}
+::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 6px;
+  border-radius: 6px;
+  background: #9ea7b0;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9ea7b0;
+}
+::-webkit-scrollbar-corner,
+::-webkit-scrollbar-button {
+  display: none;
+}

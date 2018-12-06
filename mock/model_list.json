@@ -3,7 +3,7 @@
   "name": "**入室盗窃案",
   "result": 0,
   "status": "default",
-  "related_case": "1, 2",
+  "related_case": "A5001189600002018070167,A5001087300002018080003",
   "timestamp": 1543460639132,
   "create_user": 21,
   "shared": true
@@ -12,7 +12,7 @@
   "name": "**入室盗窃案",
   "result": 0,
   "status": "processing",
-  "related_case": "1, 2",
+  "related_case": "A5001189600002018070167,A5001087300002018080003",
   "timestamp": 1543460639132,
   "create_user": 21,
   "shared": true
@@ -21,7 +21,7 @@
   "name": "**入室盗窃案",
   "result": 200,
   "status": "success",
-  "related_case": "1, 2",
+  "related_case": "A5001189600002018070167,A5001087300002018080003",
   "timestamp": 1543460639132,
   "create_user": 21,
   "shared": false
@@ -30,7 +30,7 @@
   "name": "**入室盗窃案",
   "result": 0,
   "status": "error",
-  "related_case": "1, 2",
+  "related_case": "A5001189600002018070167,A5001087300002018080003",
   "timestamp": 1543460639132,
   "create_user": 21,
   "shared": true

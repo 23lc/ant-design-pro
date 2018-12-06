@@ -23,16 +23,21 @@ export default [
         path: '/DWPZ',
         name: 'DWPZ',
         icon: 'dashboard',
+        hideChildrenInMenu: true,
         routes: [
           {
             path: '/DWPZ',
             component: './DWPZ',
           },
           {
-            path: '/DWPZ/:model',
-            hideInMenu: true,
+            path: '/DWPZ/:modelId',
             name: 'detail',
-            component: './DWPZ',
+            component: './DWPZ/result.js',
+          },
+          {
+            path: '/DWPZ/:modelId/:personId',
+            name: 'together',
+            component: './DWPZ/together.js',
           },
         ],
       },
@@ -41,7 +46,7 @@ export default [
         path: '/Trace',
         icon: 'form',
         name: 'Trace',
-        component: './Trace/index',
+        component: './Trace',
       },
       // list
       {

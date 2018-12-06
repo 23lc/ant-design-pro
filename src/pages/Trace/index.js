@@ -7,8 +7,9 @@ import classNames from 'classnames';
 import QueueAnim from 'rc-queue-anim';
 import WholeContent from '@/components/PageHeaderWrapper/WholeContent';
 import BaseMap from '@/components/BaseMap';
+import Trace from '@/components/Trace';
 // import { getTimeDistance } from '@/utils/utils';
-import Result from './result';
+// import Result from './result';
 import styles from './style.less';
 
 const { RangePicker } = DatePicker;
@@ -174,7 +175,7 @@ class BasicForm extends Component {
             </QueueAnim>
           ) : null}
           {currentTrace && (
-            <Result
+            <Trace
               map={map}
               traceLayer={traceLayer}
               clusterLayer={clusterLayer}

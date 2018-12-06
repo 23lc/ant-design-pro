@@ -40,6 +40,11 @@ class Toolbar extends Component {
       const { radius, mode } = this.state;
       // todo: 处理返回的数据，并调用回调函数
       this.drawLayer.endDraw();
+
+      // todo: 清除drawLayer中的图形
+      this.drawLayer.clear();
+      graphicLayer.clear();
+
       onDrawEnd({
         ...e,
         radius,

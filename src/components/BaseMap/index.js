@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import React, { Component, Fragment } from 'react';
 // import { List, Tag } from 'antd';
 import 'geohey-javascript-sdk/dist/lib/g.css';
@@ -31,6 +32,7 @@ class BaseMap extends Component {
     htmlLayer: null,
     htmlId: null,
     policeCase: null,
+    policeCaseMarkerLayer: null,
   };
 
   componentDidMount() {
@@ -58,16 +60,25 @@ class BaseMap extends Component {
     // });
     tileLayer.addTo(map);
 
-    // 用于显示聚类图的图层
+    // 用于显示基站轨迹聚类图的图层
     const clusterLayer = new G.Layer.Cluster({
       breakValues: [30, 50, 100],
+      clusterClickable: true,
+      pointClickable: true,
     });
+    // clusterLayer.bind('graphicOver', (e) => {
+    //   console.log(e);
+    // });
     clusterLayer.addTo(map);
 
     // 用于临时显示单个标记物的图层
     const graphicLayer = new G.Layer.Graphic();
     graphicLayer.addTo(map);
-    this.setState({ map, graphicLayer });
+
+    // 用于临时显示单个标记物的图层
+    const policeCaseMarkerLayer = new G.Layer.Graphic();
+    policeCaseMarkerLayer.addTo(map);
+    policeCaseMarkerLayer.bind('graphicClicked', this.policeCaseMarkerClick);
 
     // 用于显示轨迹的图层
     const traceLayer = new G.Layer.Graphic();
@@ -76,7 +87,14 @@ class BaseMap extends Component {
     const htmlLayer = new G.Layer.Html();
     htmlLayer.addTo(map);
 
-    this.setState({ map, graphicLayer, traceLayer, clusterLayer, htmlLayer });
+    this.setState({
+      map,
+      graphicLayer,
+      traceLayer,
+      clusterLayer,
+      htmlLayer,
+      policeCaseMarkerLayer,
+    });
   }
 
   componentWillUnmount() {
@@ -88,68 +106,90 @@ class BaseMap extends Component {
       traceLayer: null,
       clusterLayer: null,
       htmlLayer: null,
+      policeCaseMarkerLayer: null,
     });
   }
 
+  lookUpPoliceCase = e => {
+    this.tabs.setState({ selectedKey: '1' });
+    this.onPoliceCaseItemClick(e);
+  };
+
+  onPoliceCaseItemClick = ({ a, c, index }) => {
+    const { map, policeCaseMarkerLayer } = this.state;
+    const { XZB, YZB } = a;
+    if (map) {
+      const gcjCoor = G.Proj.Gcj.project(Number(XZB), Number(YZB));
+      const coor = G.Proj.WebMercator.project(gcjCoor[0], gcjCoor[1]);
+      map.centerAt(coor);
+      policeCaseMarkerLayer.clear();
+      const point = new G.Graphic.Point(
+        coor,
+        { a, c },
+        {
+          shape: 'image',
+          size: [40, 44],
+          offset: [-20, -44],
+          image: '/marker.png',
+          clickable: true,
+        }
+      );
+      const label = new G.Graphic.Point(
+        coor,
+        {},
+        {
+          shape: 'text',
+          size: [16],
+          offset: [0, -27],
+          text: index + 1,
+          textColor: '#fff',
+          clickable: false,
+        }
+      );
+      point.addTo(policeCaseMarkerLayer);
+      label.addTo(policeCaseMarkerLayer);
+
+      // if (this.handleGraphicClick) {
+      //   policeCaseMarkerLayer.unbind('graphicClicked', this.handleGraphicClick);
+      // }
+
+      // this.handleGraphicClick = e => {
+      // };
+    }
+    this.setState({ htmlId: null, policeCase: null });
+  };
+
+  policeCaseMarkerClick = e => {
+    const { htmlLayer } = this.state;
+    const coor = e.graphic.geom;
+    const id = htmlLayer.addHtml(
+      `<div id="htmllayer_${new Date().getTime()}"></div>`,
+      coor[0],
+      coor[1]
+    );
+    this.setState({ htmlId: id, policeCase: e.graphic.attrs });
+  };
+
   render() {
-    const { map, graphicLayer, htmlLayer, htmlId, policeCase } = this.state;
+    const { map, htmlLayer, htmlId, policeCase } = this.state;
     const { toolbar, policeCaseList, modelList } = this.props;
     return (
       <Fragment>
         <div id="mapContainer" className={styles.mapContainer} />
         {map !== null && toolbar && <Toolbar {...this.state} {...toolbar} />}
-        <Tabs mode="right" {...this.state}>
+        <Tabs
+          ref={tabs => {
+            this.tabs = tabs;
+          }}
+          mode="right"
+          {...this.state}
+        >
           <Tabs.TabPane
             title="警情列表"
             key="1"
             style={{ padding: '20px 8px', background: '#fff' }}
           >
-            <PoliceCaseList
-              dataSource={policeCaseList}
-              onItemClick={({ a, c, index }) => {
-                const { XZB, YZB } = a;
-                if (map) {
-                  const gcjCoor = G.Proj.Gcj.project(Number(XZB), Number(YZB));
-                  const coor = G.Proj.WebMercator.project(gcjCoor[0], gcjCoor[1]);
-                  map.centerAt(coor);
-                  graphicLayer.clear();
-                  const point = new G.Graphic.Point(
-                    coor,
-                    { a, c },
-                    {
-                      shape: 'image',
-                      size: [40, 44],
-                      offset: [-20, -44],
-                      image: '/marker.png',
-                      clickable: true,
-                    }
-                  );
-                  const label = new G.Graphic.Point(
-                    coor,
-                    {},
-                    {
-                      shape: 'text',
-                      size: [16],
-                      offset: [0, -27],
-                      text: index + 1,
-                      textColor: '#fff',
-                      clickable: false,
-                    }
-                  );
-                  point.addTo(graphicLayer);
-                  label.addTo(graphicLayer);
-
-                  graphicLayer.bind('graphicClicked', e => {
-                    const id = htmlLayer.addHtml(
-                      `<div id="htmllayer_${new Date().getTime()}"></div>`,
-                      coor[0],
-                      coor[1]
-                    );
-                    this.setState({ htmlId: id, policeCase: e.graphic.attrs });
-                  });
-                }
-              }}
-            />
+            <PoliceCaseList dataSource={policeCaseList} onItemClick={this.onPoliceCaseItemClick} />
           </Tabs.TabPane>
           <Tabs.TabPane title="图层列表" key="2" style={{ padding: '20px 8px' }}>
             <LayerPicker />

@@ -2,11 +2,15 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import BinaryTree from '@/components/BinaryTree';
+import Link from 'umi/link';
+import { Icon, Button, Modal, Form, Input, Select, Radio } from 'antd';
 import { DragDropContext } from 'react-dnd';
 import TouchBackend from 'react-dnd-touch-backend';
 import classNames from 'classnames';
+import router from 'umi/router';
 import RealationNode from './node/RelationNode';
 import ResourceNode from './node/ResourceNode';
+import ModelNode from './node/ModelNode';
 import { onDragNode } from './util';
 
 // import { getTimeDistance } from '@/utils/utils';
@@ -83,9 +87,11 @@ const Node = props => {
   );
 };
 
-@connect(({ sjpz: { treeNodes, resource } }) => ({
+@connect(({ global: { policeCaseList }, sjpz: { treeNodes, resource, modelList } }) => ({
   treeNodes,
   resource,
+  modelList,
+  policeCaseList,
 }))
 @DragDropContext(TouchBackend({ enableMouseEvents: true }))
 class SJPZModel extends Component {
@@ -93,7 +99,9 @@ class SJPZModel extends Component {
   //   super(props);
   // }
 
-  state = {};
+  state = {
+    visible: false,
+  };
 
   componentDidMount() {
     const { dispatch } = this.props;
@@ -103,7 +111,6 @@ class SJPZModel extends Component {
     dispatch({
       type: 'sjpz/fetchModelList',
     });
-    // todo: 获取当前模型下所有的tree_node和resource
   }
 
   componentWillUnmount() {}
@@ -137,9 +144,34 @@ class SJPZModel extends Component {
     callback();
   };
 
+  saveModel = () => {
+    // todo: 保存表单项
+
+    this.setState({ visible: false });
+  };
+
   render() {
-    const { treeNodes, resource } = this.props;
-    const { timestamp } = this.state;
+    const {
+      form: { getFieldDecorator },
+      treeNodes,
+      resource,
+      modelList,
+      modelId,
+      policeCaseList,
+    } = this.props;
+    const { timestamp, visible } = this.state;
+    const formItemLayout = {
+      labelCol: {
+        xs: { span: 4 },
+        sm: { span: 4 },
+      },
+      wrapperCol: {
+        xs: { span: 20 },
+        sm: { span: 20 },
+      },
+    };
+    // todo: 处理id的数据类型
+    const model = modelList.find(item => item.id === Number(modelId));
     return (
       <div className={styles.wrapper}>
         <div className={styles['nodes-panel']}>
@@ -200,9 +232,25 @@ class SJPZModel extends Component {
           </div>
           <div className={styles.panel} style={{ flex: 1 }}>
             <header>我的模型</header>
+            <div className={styles.node_container}>
+              {modelList.map(item => (
+                <ModelNode
+                  key={item.id}
+                  name={item.name}
+                  onClick={() => {
+                    router.push(`/DWPZ?modelId=${item.id}`);
+                  }}
+                />
+              ))}
+            </div>
           </div>
         </div>
         <div className={classNames(styles.panel, styles['tree-panel'])}>
+          <div>
+            <Link to="/DWPZ" style={{ float: 'right', width: '60px' }}>
+              <Icon type="rollback" style={{ fontSize: '20px', padding: '10px', margin: '10px' }} />
+            </Link>
+          </div>
           <BinaryTree
             nodes={treeNodes.map(item => ({
               ...item,
@@ -239,10 +287,83 @@ class SJPZModel extends Component {
               },
             }}
           />
+          <div className={styles['button-group']}>
+            {/* todo: 开始碰撞的disable值, 一方面取决于模型树结构是否合法，另外一方面取决于模型本身是否是只读的。 */}
+            <Button
+              type="primary"
+              style={{ flexBasis: '180px' }}
+              disabled={model && model.status === 'processing'}
+            >
+              开始碰撞
+            </Button>
+            {model && model.status === 'success' && (
+              <Button
+                onClick={() => {
+                  router.push(`/DWPZ/${modelId}`);
+                }}
+              >
+                查看结果
+              </Button>
+            )}
+            {/* todo: 保存模型的disable值, 取决于该模型的create_user_id是否与当前登录用户相同 */}
+            <Button
+              onClick={() => {
+                this.setState({ visible: true });
+              }}
+            >
+              保存模型
+            </Button>
+          </div>
         </div>
+        <Modal
+          title={null}
+          visible={visible}
+          onCancel={() => {
+            // todo: 重置Modal中的表单项
+
+            this.setState({ visible: false });
+          }}
+          onOk={this.saveModel}
+        >
+          <Form>
+            <Form.Item label="模型名称" required {...formItemLayout}>
+              {getFieldDecorator('name', {
+                initialValue: model ? model.name : '',
+              })(<Input placeholder="请输入模型名称" />)}
+            </Form.Item>
+            <Form.Item label="模型描述" {...formItemLayout}>
+              {getFieldDecorator('description', {
+                initialValue: model ? model.description : '',
+              })(<Input.TextArea rows={4} placeholder="请输入模型描述、研判思路" />)}
+            </Form.Item>
+            <Form.Item label="关联案件" required {...formItemLayout}>
+              {getFieldDecorator('related_case', {
+                initialValue: model ? model.related_case.split(',') : [],
+              })(
+                <Select mode="multiple">
+                  {policeCaseList.map(({ c }) => (
+                    <Select.Option key={c.KID} value={c.ASJBH}>
+                      {c.AJMC}
+                    </Select.Option>
+                  ))}
+                </Select>
+              )}
+            </Form.Item>
+            <Form.Item label="共享模型" required {...formItemLayout}>
+              {getFieldDecorator('shared', {
+                initialValue: model ? model.shared : '',
+              })(
+                <Radio.Group>
+                  <Radio value>共享(所有用户可见)</Radio>
+                  <Radio value={false}>私用(仅本人可见)</Radio>
+                </Radio.Group>
+              )}
+            </Form.Item>
+          </Form>
+        </Modal>
       </div>
     );
   }
 }
 
-export default SJPZModel;
+export default Form.create()(SJPZModel);

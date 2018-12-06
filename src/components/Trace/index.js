@@ -5,13 +5,13 @@ import G from 'geohey-javascript-sdk';
 // import WholeContent from '@/components/PageHeaderWrapper/WholeContent';
 // import BaseMap from '@/components/BaseMap';
 import classNames from 'classnames';
-import styles from './style.less';
+import styles from './index.less';
 
 // import { getTimeDistance } from '@/utils/utils';
 
 // import styles from './Analysis.less';
 
-class Result extends Component {
+class Trace extends Component {
   state = {
     playing: false,
     step: -1,
@@ -26,6 +26,7 @@ class Result extends Component {
       const polyline = trace.map(item =>
         G.Proj.WebMercator.project(Number(item.LON), Number(item.LAT))
       );
+      // 该图形用于计算bbox, 并不渲染
       const traceLine = new G.Graphic.Polyline(
         polyline,
         {},
@@ -40,7 +41,9 @@ class Result extends Component {
       trace.forEach(item => {
         const point = new G.Graphic.Point(
           G.Proj.WebMercator.project(Number(item.LON), Number(item.LAT)),
-          {},
+          {
+            ...item,
+          },
           {
             shape: 'image',
             size: [40, 44],
@@ -150,11 +153,13 @@ class Result extends Component {
 
   play = () => {
     const { trace } = this.props;
-    this.interval = setInterval(() => {
+    const next = () => {
       const { step } = this.state;
       const newStep = (step + 1) % trace.length;
       this.setState({ step: newStep });
-    }, 2000);
+    };
+    next();
+    this.interval = setInterval(next, 2000);
     this.setState({ playing: true });
   };
 
@@ -218,4 +223,4 @@ class Result extends Component {
   }
 }
 
-export default Result;
+export default Trace;

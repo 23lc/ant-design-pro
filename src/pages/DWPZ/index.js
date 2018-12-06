@@ -3,17 +3,19 @@ import { connect } from 'dva';
 import WholeContent from '@/components/PageHeaderWrapper/WholeContent';
 import BaseMap from '@/components/BaseMap';
 import SJPZModel from './SJPZModel';
+import FormPanel from './FormPanel';
 import List from './list';
 
 // import { getTimeDistance } from '@/utils/utils';
 
 import styles from './style.less';
 
-@connect(({ loading, global: { policeCaseList, layerList }, sjpz: { modelList } }) => ({
+@connect(({ loading, global: { policeCaseList, layerList }, sjpz: { modelList, formPanel } }) => ({
   loading: loading.effects['chart/fetch'],
   policeCaseList,
   layerList,
   modelList,
+  formPanel,
 }))
 class DWPZ extends Component {
   // constructor(props) {
@@ -34,9 +36,20 @@ class DWPZ extends Component {
 
   componentWillUnmount() {}
 
-  onDrawEnd = () => {
+  onDrawEnd = ({ graphic: { geom }, mode }) => {
+    const { dispatch } = this.props;
+    // const { graphicLayer } = this.basemap.state;
     // todo: 新建一个节点对象
-    // console.log(e);
+    // e.graphic.addTo(graphicLayer);
+    dispatch({
+      type: 'sjpz/updateParams',
+      payload: {
+        formPanel: {
+          geom,
+          mode,
+        },
+      },
+    });
   };
 
   create = () => {};
@@ -46,29 +59,45 @@ class DWPZ extends Component {
       policeCaseList,
       layerList,
       modelList,
+      formPanel,
       history: {
         location: {
-          query: { model },
+          query: { modelId },
         },
       },
     } = this.props;
     return (
       <WholeContent>
         <BaseMap
-          policeCaseList={policeCaseList}
-          modelList={<List type="simple" dataSource={modelList} onCreate={this.create} />}
-          layerList={layerList}
-          toolbar={{
-            onDrawEnd: this.onDrawEnd,
+          ref={basemap => {
+            this.basemap = basemap;
           }}
+          policeCaseList={policeCaseList}
+          modelList={
+            <List
+              type="simple"
+              dataSource={modelList}
+              policeCaseList={policeCaseList}
+              onCreate={this.create}
+              onPoliceCaseItemClick={this.basemap && this.basemap.lookUpPoliceCase}
+            />
+          }
+          layerList={layerList}
+          toolbar={modelId !== undefined && { onDrawEnd: this.onDrawEnd }}
         />
-        {model ? (
-          <SJPZModel />
+        {modelId !== undefined ? (
+          <SJPZModel modelId={modelId} />
         ) : (
           <div className={styles.wrapper}>
-            <List type="normal" dataSource={modelList} />
+            <List
+              type="normal"
+              dataSource={modelList}
+              policeCaseList={policeCaseList}
+              onPoliceCaseItemClick={this.basemap && this.basemap.lookUpPoliceCase}
+            />
           </div>
         )}
+        {this.basemap && formPanel && <FormPanel graphicLayer={this.basemap.state.graphicLayer} />}
       </WholeContent>
     );
   }

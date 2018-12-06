@@ -35,7 +35,6 @@ export default class OpenClose extends Component {
       parentNodeType,
       rect_size,
     } = this.props;
-    console.log(nodes);
     if (!nodes[`order_num${order_num * 2}`] && editable) {
       return (
         <circle

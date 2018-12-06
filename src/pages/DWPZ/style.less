@@ -17,6 +17,8 @@
   pointer-events: none;
   padding: 20px;
   height: 100%;
+  flex-wrap: wrap;
+  flex-direction: column;
 }
 
 .panel {
@@ -75,6 +77,10 @@
     padding: 12px;
     margin: 10px 0;
     color: #3f4048;
+    cursor: pointer;
+    &:hover {
+      background: #fcfcfc;
+    }
     & header {
       width: 80px;
       height: 80px;
@@ -110,15 +116,91 @@
       position: absolute;
       // text-align: center;
       // line-height: 28px;
+      font-size: 12px;
       right: -10px;
       bottom: 20px;
       // width: 74px;
       // height: 28px;
       // color: #fff;
       border-radius: 2px;
-      background-color: #5c9ff6;
-      border-color: #5c9ff6;
+      // background-color: #5c9ff6;
+      // border-color: #5c9ff6;
       box-shadow: 0 2px 2px 0 rgba(92, 159, 246, 0.73);
+    }
+    a::after {
+      content: ', ';
+    }
+    a:last-child::after {
+      content: '';
+    }
+  }
+}
+
+.result {
+  width: 420px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  & > header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 18px;
+    height: 40px;
+    .close {
+      padding: 12px;
+      line-height: 40px;
+      font-size: 16px;
+      cursor: pointer;
+      i {
+        color: #999;
+      }
+      &:hover i {
+        color: #444;
+      }
+    }
+  }
+  .listItem {
+    display: flex;
+    background: #fff;
+    color: #3f4048;
+    padding: 5px;
+    position: relative;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    padding-right: 40px;
+    border: 1px solid;
+    border-color: #e5e9ec;
+    cursor: pointer;
+    transition: all 0.3s;
+    &.active {
+      border-color: @blue-6;
+    }
+    img {
+      width: 80px;
+      height: 80px;
+      border: 1px solid #666;
+      margin-right: 5px;
+      flex-basis: 85px;
+    }
+    .status {
+      position: absolute;
+      right: -20px;
+      top: calc(~'50% - 30px');
+      width: 60px;
+      height: 60px;
+      border: 1px solid;
+      border-radius: 5px;
+      color: #fff;
+      text-align: center;
+      // line-height: 20px;
+      font-size: 14px;
+      letter-spacing: 2px;
+      padding: 8px 6px 0 10px;
+      background: @blue-6;
+      border-color: @blue-6;
+    }
+    .content {
+      flex: 1;
     }
   }
 }
