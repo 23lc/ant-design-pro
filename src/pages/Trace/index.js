@@ -8,19 +8,27 @@ import QueueAnim from 'rc-queue-anim';
 import WholeContent from '@/components/PageHeaderWrapper/WholeContent';
 import BaseMap from '@/components/BaseMap';
 import Trace from '@/components/Trace';
+import ModelList from '@/components/ModelList';
 // import { getTimeDistance } from '@/utils/utils';
 // import Result from './result';
 import styles from './style.less';
 
 const { RangePicker } = DatePicker;
 
-@connect(({ list: { info, trace, timestamp }, global: { policeCaseList, layerList } }) => ({
-  info,
-  trace,
-  policeCaseList,
-  layerList,
-  timestamp,
-}))
+@connect(
+  ({
+    list: { info, trace, timestamp },
+    global: { policeCaseList, layerList },
+    sjpz: { modelList },
+  }) => ({
+    info,
+    trace,
+    policeCaseList,
+    layerList,
+    timestamp,
+    modelList,
+  })
+)
 class GJCX extends Component {
   // constructor(props) {
   //   super(props);
@@ -43,6 +51,9 @@ class GJCX extends Component {
     } = this.props;
     dispatch({
       type: 'global/fetchPoliceCase',
+    });
+    dispatch({
+      type: 'sjpz/fetchModelList',
     });
     if (keyword) {
       this.setState({ keyword, type });
@@ -92,7 +103,7 @@ class GJCX extends Component {
   };
 
   render() {
-    const { info, trace, policeCaseList, layerList } = this.props;
+    const { info, trace, policeCaseList, layerList, modelList } = this.props;
     const { keyword, currentTrace, list, type } = this.state;
     let traceLayer = null;
     let map = null;
@@ -110,6 +121,15 @@ class GJCX extends Component {
           }}
           policeCaseList={policeCaseList}
           layerList={layerList}
+          modelList={
+            <ModelList
+              type="simple"
+              dataSource={modelList}
+              policeCaseList={policeCaseList}
+              onCreate={this.create}
+              onPoliceCaseItemClick={this.basemap && this.basemap.lookUpPoliceCase}
+            />
+          }
         />
         <div className={styles.wrapper}>
           <div className={classNames(styles.panel, styles.main)}>

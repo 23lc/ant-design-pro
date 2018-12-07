@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import WholeContent from '@/components/PageHeaderWrapper/WholeContent';
 import BaseMap from '@/components/BaseMap';
+import ModelList from '@/components/ModelList';
 import SJPZModel from './SJPZModel';
 import FormPanel from './FormPanel';
-import List from './list';
 
 // import { getTimeDistance } from '@/utils/utils';
 
@@ -73,7 +73,7 @@ class DWPZ extends Component {
           }}
           policeCaseList={policeCaseList}
           modelList={
-            <List
+            <ModelList
               type="simple"
               dataSource={modelList}
               policeCaseList={policeCaseList}
@@ -88,7 +88,7 @@ class DWPZ extends Component {
           <SJPZModel modelId={modelId} />
         ) : (
           <div className={styles.wrapper}>
-            <List
+            <ModelList
               type="normal"
               dataSource={modelList}
               policeCaseList={policeCaseList}

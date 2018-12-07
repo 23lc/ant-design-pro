@@ -8,7 +8,7 @@ import router from 'umi/router';
 // import WholeContent from '@/components/PageHeaderWrapper/WholeContent';
 // import BaseMap from '@/components/BaseMap';
 import classNames from 'classnames';
-import styles from './style.less';
+import styles from './index.less';
 
 class ModelList extends Component {
   state = {
@@ -22,7 +22,7 @@ class ModelList extends Component {
   componentWillUnmount() {}
 
   render() {
-    const { dataSource, type, onCreate, policeCaseList, onPoliceCaseItemClick } = this.props;
+    const { dataSource, type, policeCaseList, onPoliceCaseItemClick } = this.props;
     const { keyword } = this.state;
     return (
       <div className={classNames(styles.list, styles[type])}>
@@ -113,7 +113,7 @@ class ModelList extends Component {
             style={{ marginTop: '10px' }}
             onClick={() => {
               router.push(`/DWPZ?modelId=`);
-              onCreate();
+              // onCreate();
             }}
             block
           >
