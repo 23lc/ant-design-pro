@@ -73,6 +73,8 @@ export default {
   'menu.DWPZ.detail': '查看模型',
   'menu.DWPZ.together': '伴随查询',
   'menu.Trace': '轨迹查询',
+  'menu.XSSF': '虚实身份',
+  'menu.SSDW': '实时轨迹',
   'menu.list': '实时定位',
   'menu.list.searchtable': '查询表格',
   'menu.list.basiclist': '标准列表',

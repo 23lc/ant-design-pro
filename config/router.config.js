@@ -50,16 +50,16 @@ export default [
       },
       // list
       {
-        path: '/list',
+        path: '/XSSF',
         icon: 'table',
-        name: 'list',
-        component: './List/TableList',
+        name: 'XSSF',
+        component: './XSSF',
       },
       {
-        path: '/profile',
-        name: 'profile',
+        path: '/SSDW',
+        name: 'SSDW',
         icon: 'profile',
-        component: './Profile/BasicProfile',
+        component: './SSDW',
       },
       {
         name: 'exception',

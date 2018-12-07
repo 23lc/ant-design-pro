@@ -1,18 +1,16 @@
 /* eslint-disable prefer-destructuring */
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Input, Button, DatePicker, List, Select } from 'antd';
+import { Input, Button, List, Select } from 'antd';
 import classNames from 'classnames';
-// import G from 'geohey-javascript-sdk';
+import G from 'geohey-javascript-sdk';
 import QueueAnim from 'rc-queue-anim';
 import WholeContent from '@/components/PageHeaderWrapper/WholeContent';
 import BaseMap from '@/components/BaseMap';
-import Trace from '@/components/Trace';
+// import Trace from '@/components/Trace';
 // import { getTimeDistance } from '@/utils/utils';
 // import Result from './result';
 import styles from './style.less';
-
-const { RangePicker } = DatePicker;
 
 @connect(({ list: { info, trace, timestamp }, global: { policeCaseList, layerList } }) => ({
   info,
@@ -88,20 +86,50 @@ class GJCX extends Component {
   };
 
   handleSelectItem = e => {
+    // todo:
+    const { traceLayer, map } = this.basemap.state;
+    const { trace } = this.props;
+    const item = trace[e][0];
+    const coor = G.Proj.WebMercator.project(Number(item.LON), Number(item.LAT));
+    new G.Graphic.Point(
+      coor,
+      {},
+      {
+        shape: 'image',
+        size: [80, 80],
+        offset: [-40, -40],
+        image: '/photo.png',
+        clickable: true,
+      }
+    ).addTo(traceLayer);
+    map.centerAt(coor);
+    map.showPopup(
+      coor,
+      `<div style="height: 84px">
+        <header style="color: #5c9ff6;font-size: 14px;border-left: 2px solid rgba(0, 111, 255, .08);padding-left: 5px;">实时定位</header>
+        <div style="font-size: 12px;padding-left: 7px;margin-top: 5px;">
+          <div>查询对象: ${e}</div>
+          <div>当前位置: ${item.ADDRESS}</div>
+          <div>捕获时间: ${item.TIMESTR}</div>
+        </div>
+      </div>`,
+      0,
+      -40
+    );
     this.setState({ currentTrace: e });
   };
 
   render() {
     const { info, trace, policeCaseList, layerList } = this.props;
     const { keyword, currentTrace, list, type } = this.state;
-    let traceLayer = null;
-    let map = null;
-    let clusterLayer = null;
-    if (this.basemap) {
-      traceLayer = this.basemap.state.traceLayer;
-      map = this.basemap.state.map;
-      clusterLayer = this.basemap.state.clusterLayer;
-    }
+    // let traceLayer = null;
+    // let map = null;
+    // let clusterLayer = null;
+    // if (this.basemap) {
+    //   traceLayer = this.basemap.state.traceLayer;
+    //   map = this.basemap.state.map;
+    //   clusterLayer = this.basemap.state.clusterLayer;
+    // }
     return (
       <WholeContent>
         <BaseMap
@@ -145,13 +173,12 @@ class GJCX extends Component {
                 导入
               </Button>
             </div>
-            <RangePicker />
             <Button
               type="primary"
               onClick={this.search}
               style={{ width: '160px', background: '#3ca2ef', borderColor: '#3ca2ef' }}
             >
-              轨迹查询
+              实时定位
             </Button>
           </div>
           {info ? (
@@ -196,9 +223,9 @@ class GJCX extends Component {
                             trace && trace[e] ? styles['status-success'] : styles['status-querying']
                           )}
                         >
-                          {trace && trace[e] === undefined && '正在查询'}
-                          {trace && trace[e] === null && '查询失败'}
-                          {trace && trace[e] && '查询成功'}
+                          {trace && trace[e] === undefined && '正在定位'}
+                          {trace && trace[e] === null && '定位失败'}
+                          {trace && trace[e] && '定位成功'}
                         </div>
                       </List.Item>
                     );
@@ -207,17 +234,6 @@ class GJCX extends Component {
               </div>
             </QueueAnim>
           ) : null}
-          {currentTrace && (
-            <Trace
-              map={map}
-              traceLayer={traceLayer}
-              clusterLayer={clusterLayer}
-              trace={trace[currentTrace]}
-              onClose={() => {
-                this.setState({ currentTrace: null });
-              }}
-            />
-          )}
         </div>
       </WholeContent>
     );

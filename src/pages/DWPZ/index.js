@@ -10,8 +10,7 @@ import List from './list';
 
 import styles from './style.less';
 
-@connect(({ loading, global: { policeCaseList, layerList }, sjpz: { modelList, formPanel } }) => ({
-  loading: loading.effects['chart/fetch'],
+@connect(({ global: { policeCaseList, layerList }, sjpz: { modelList, formPanel } }) => ({
   policeCaseList,
   layerList,
   modelList,
