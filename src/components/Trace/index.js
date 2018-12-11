@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 // import { connect } from 'dva';
 import { Timeline, Icon } from 'antd';
 import G from 'geohey-javascript-sdk';
+import { gcj02tobd09, wgs84togcj02 } from 'coordtransform';
 // import WholeContent from '@/components/PageHeaderWrapper/WholeContent';
 // import BaseMap from '@/components/BaseMap';
 import classNames from 'classnames';
@@ -39,8 +40,10 @@ class Trace extends Component {
 
       // 绘制相关基站点
       trace.forEach(item => {
+        const gcjcoor = wgs84togcj02(Number(item.LON), Number(item.LAT));
+        const coor = gcj02tobd09(gcjcoor[0], gcjcoor[1]);
         const point = new G.Graphic.Point(
-          G.Proj.WebMercator.project(Number(item.LON), Number(item.LAT)),
+          G.Proj.WebMercator.project(coor[0], coor[1]),
           {
             ...item,
           },

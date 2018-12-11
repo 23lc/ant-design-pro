@@ -54,7 +54,7 @@ class BaseMap extends Component {
       },
     });
 
-    const tileLayer = new G.Layer.AMap('street');
+    const tileLayer = new G.Layer.BaiduMap('street');
     // const tileLayer = new G.Layer.Tile('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
     //   cluster: ['a', 'b', 'c'],
     // });

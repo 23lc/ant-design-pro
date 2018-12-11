@@ -33,6 +33,7 @@
     "bizcharts": "^3.2.5-beta.4",
     "bizcharts-plugin-slider": "^2.0.3",
     "classnames": "^2.2.6",
+    "coordtransform": "^2.1.2",
     "d3": "^5.7.0",
     "dva": "^2.4.0",
     "enquire-js": "^0.2.1",
