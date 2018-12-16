@@ -7,11 +7,13 @@ import 'geohey-javascript-sdk/dist/lib/g-canvas.min';
 import 'geohey-javascript-sdk/dist/lib/g-draw.min';
 import 'geohey-javascript-sdk/dist/lib/g-maps.min';
 import 'geohey-javascript-sdk/dist/lib/g-cluster.min';
+import { gcj02tobd09, wgs84togcj02 } from 'coordtransform';
 import Tabs from '@/components/Tabs';
 import PoliceCaseList from '@/components/PoliceCaseList';
 import Toolbar from './Toolbar';
 import LayerPicker from './LayerPicker';
 import PoliceCasePanel from './PoliceCasePanel';
+import convert from './convert';
 
 // import { getTimeDistance } from '@/utils/utils';
 
@@ -36,6 +38,11 @@ class BaseMap extends Component {
   };
 
   componentDidMount() {
+    const center = [11860868, 3446746];
+    // const center = [12956640.105616443, 4853207.578978273];
+    const coor = G.Proj.WebMercator.unproject(center[0], center[1]);
+    const gcjcoor = wgs84togcj02(coor[0], coor[1]);
+    const baiducoor = gcj02tobd09(gcjcoor[0], gcjcoor[1]);
     const map = new G.Map('mapContainer', {
       minRes: 0.298582, // 地图最小分辨率
       maxRes: 156543.033928, // 地图最大分辨率
@@ -48,8 +55,8 @@ class BaseMap extends Component {
       continuouslyZoom: false, // 是否允许无极缩放
       initStatus: {
         // 地图初始状态
-        center: [11860868, 3446746], // 地图中心
-        res: 305.74811 / 16, // 分辨率
+        center: convert.convertLL2MC({ lng: baiducoor[0], lat: baiducoor[1] }), // 地图中心
+        res: 305.74811 / 64, // 分辨率
         rotate: 0, // 旋转角度
       },
     });
